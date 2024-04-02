@@ -11,26 +11,20 @@ from discord.ext import commands
 
 from cfg import TELEGRAM_BOT_TOKEN, DISCORD_BOT_TOKEN, CHAT_ID, ROLE_NAME
 
-telegram_bot = Bot(token=TELEGRAM_BOT_TOKEN, default=DefaultBotProperties(parse_mode=ParseMode.HTML))
 dp = Dispatcher()
 
-intents = discord.Intents.all()
+discord_bot = commands.Bot(command_prefix='/', intents=discord.Intents.all())
 
-discord_bot = commands.Bot(command_prefix='!', intents=intents)
-
-# async def send_message_discord(channel_id, text):
-#     channel = discord_bot.get_channel(channel_id)
-#     await channel.send(text)
-
+telegram_bot = Bot(token=TELEGRAM_BOT_TOKEN, default=DefaultBotProperties(parse_mode=ParseMode.HTML))
 
 codes = {}
 attempts = {}
 
-# todo: fix /start
+
 @dp.message(CommandStart())
 async def command_start_handler(message: Message) -> None:
     await message.answer(
-        f"твой айди - {message.from_user.id}, используй его в дискорде с командой <code>!send_code {message.from_user.id}</code>")
+        f"твой айди - {message.from_user.id}, используй его в дискорде с командой \n <code>/send {message.from_user.id}</code>")
 
 
 async def already_verified(ctx):
@@ -43,7 +37,7 @@ async def already_verified(ctx):
 
 
 @discord_bot.command()
-async def send_code(ctx):
+async def send(ctx):
     if await already_verified(ctx):
         return
 
@@ -62,8 +56,9 @@ async def send_code(ctx):
 
     code = random.randint(10000, 99999)
     codes[ctx.message.author.id] = str(code)
-    await telegram_bot.send_message(user_id, f"ваш код подтверждения: {code}, через 120 секунд он будет уничтожен")
-    await ctx.send("код подтверждения отправлен в Телеграм")
+    await telegram_bot.send_message(user_id, f"ваш код подтверждения: {code}, через 120 секунд он будет уничтожен \n"
+                                             f"<code>/verify {code}</code>")
+    await ctx.send("код подтверждения отправлен в телеграм")
     await asyncio.sleep(120)
     try:
         codes.pop(ctx.message.author.id)
@@ -73,7 +68,7 @@ async def send_code(ctx):
 
 
 @discord_bot.command()
-async def verify_code(ctx):
+async def verify(ctx):
     if await already_verified(ctx):
         return
 
@@ -115,9 +110,9 @@ async def on_ready():
 discord_bot.run(DISCORD_BOT_TOKEN)
 
 
-async def main():
+async def main() -> None:
     await dp.start_polling(telegram_bot)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     asyncio.run(main())
