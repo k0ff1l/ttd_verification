@@ -1,2 +1,4 @@
 cfg.py
 .venv
+.idea
+__pycache__
