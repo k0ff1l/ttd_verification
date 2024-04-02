@@ -1,8 +1,8 @@
+import aiogram.client.default
 import asyncio
 import discord
 import random
 from aiogram import Bot, Dispatcher
-from aiogram.client.default import DefaultBotProperties
 from aiogram.enums import ParseMode
 from aiogram.filters import CommandStart
 from aiogram.types import Message
@@ -13,7 +13,8 @@ dp = Dispatcher()
 
 discord_bot = commands.Bot(command_prefix='/', intents=discord.Intents.all())
 
-telegram_bot = Bot(token=TELEGRAM_BOT_TOKEN, default=DefaultBotProperties(parse_mode=ParseMode.HTML))
+telegram_bot = Bot(token=TELEGRAM_BOT_TOKEN,
+                   default=aiogram.client.default.DefaultBotProperties(parse_mode=ParseMode.HTML))
 
 codes = {}
 attempts = {}
