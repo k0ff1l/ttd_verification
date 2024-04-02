@@ -1,15 +1,13 @@
 import asyncio
-import random
-
 import discord
+import random
 from aiogram import Bot, Dispatcher
 from aiogram.client.default import DefaultBotProperties
 from aiogram.enums import ParseMode
 from aiogram.filters import CommandStart
 from aiogram.types import Message
-from discord.ext import commands
-
 from cfg import TELEGRAM_BOT_TOKEN, DISCORD_BOT_TOKEN, CHAT_ID, ROLE_NAME
+from discord.ext import commands
 
 dp = Dispatcher()
 
@@ -40,7 +38,7 @@ async def already_verified(ctx):
 async def send(ctx):
     if await already_verified(ctx):
         return
-
+    user_id = "***"
     try:
         if len(ctx.message.content.split(' ')) < 2:
             await ctx.send("укажите ID пользователя")
@@ -48,6 +46,10 @@ async def send(ctx):
         user_id = ctx.message.content.split(' ')[1]
     except IndexError:
         await ctx.send("произошла ошибка при извлечении ID пользователя")
+
+    if user_id == "***":
+        await ctx.send("произошла ошибка при извлечении ID пользователя")
+        raise Exception("User ID is not defined")
 
     member = await telegram_bot.get_chat_member(CHAT_ID, user_id)
     if member.status in ['left', 'kicked', 'restricted']:
