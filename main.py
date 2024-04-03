@@ -19,9 +19,15 @@ telegram_bot = Bot(token=TELEGRAM_BOT_TOKEN,
 codes = {}
 attempts = {}
 
+# todo
+'''
+оптимизировать количество шагов, чтобы сразу по старту проверял, есть ли человек
+в нужной группе, если есть отправляет временный код, подтверждает
 
+учесть, что нужно ещё и переименовывать пользователя в его реальное имя и фамилию.
+'''
 @dp.message(CommandStart())
-async def command_start_handler(message: Message) -> None:
+async def command_start_handler(message):
     await message.answer(
         f"твой айди - {message.from_user.id}, используй его в дискорде с командой \n <code>/send {message.from_user.id}</code>")
 
