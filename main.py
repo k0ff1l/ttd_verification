@@ -124,4 +124,3 @@ async def main():
 if __name__ == "__main__":
     print("starting main")
     asyncio.run(main())
-    discord_bot.run(DISCORD_BOT_TOKEN)
