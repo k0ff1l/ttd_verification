@@ -110,12 +110,18 @@ async def on_ready():
     print('logged in as', discord_bot.user.name, discord_bot.user.id)
 
 
-discord_bot.run(DISCORD_BOT_TOKEN)
+async def discord_bot_task():
+    await discord_bot.start(DISCORD_BOT_TOKEN)
 
 
-async def main() -> None:
-    await dp.start_polling(telegram_bot)
+async def main():
+    telegram_task = asyncio.create_task(dp.start_polling(telegram_bot))
+    discord_task = asyncio.create_task(discord_bot_task())
+    await telegram_task
+    await discord_task
 
 
 if __name__ == "__main__":
+    print("starting main")
     asyncio.run(main())
+    discord_bot.run(DISCORD_BOT_TOKEN)
